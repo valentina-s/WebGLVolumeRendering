@@ -72,7 +72,7 @@
 			const int MAX_STEPS = 887;
 
 			//Acts like a texture3D using Z slices and trilinear filtering.
-			vec4 sampleAs3DTexture( vec3 texCoord )
+			vec4 sampleAs3DTexture(vec3 texCoord)
 			{
 				vec4 colorSlice1, colorSlice2;
 				vec2 texCoordSlice1, texCoordSlice2;
@@ -80,11 +80,12 @@
 				//The z coordinate determines which Z slice we have to look for.
 				//Z slice number goes from 0 to 255.
 				//float nofSlices = 50.;
-				float nofSlices = 255.;
-				float zSliceNumber1 = floor(texCoord.z  * 255.0);
+				float nofSlices = 64.;
+				float n = 63.;
+				float zSliceNumber1 = floor(texCoord.z  * n);
 
 				//As we use trilinear we go the next Z slice.
-				float zSliceNumber2 = min( zSliceNumber1 + 1.0, 255.0); //Clamp to 255
+				float zSliceNumber2 = min(zSliceNumber1 + 1.0, n); //Clamp to 255
 
         // This might be location in slice matrix
 
@@ -92,19 +93,19 @@
 				//The original UV coordinates have to be rescaled by the tile numbers in each row and column.
         // nofCols = 10.0;
         // nofRows = 5.;
-				float nofCols = 16.;
-				float nofRows = 16.;
-				texCoord.xy /= 16.0;//this might need to be number of rows
+				float nofCols = 8.;
+				float nofRows = 8.;
+				texCoord.xy /= nofCols;//this might need to be number of rows
 
 				texCoordSlice1 = texCoordSlice2 = texCoord.xy;
 
 
 				//Add an offset to the original UV coordinates depending on the row and column number.
-				texCoordSlice1.x += (mod(zSliceNumber1, 16.0 ) / 16.0);
-				texCoordSlice1.y += floor((255.0 - zSliceNumber1) / 16.0) / 16.0;
+				texCoordSlice1.x += (mod(zSliceNumber1, nofCols ) / nofCols);
+				texCoordSlice1.y += floor((n - zSliceNumber1) / nofCols) / nofCols;
 
-				texCoordSlice2.x += (mod(zSliceNumber2, 16.0 ) / 16.0);
-				texCoordSlice2.y += floor((255.0 - zSliceNumber2) / 16.0) / 16.0;
+				texCoordSlice2.x += (mod(zSliceNumber2, nofCols ) / nofCols);
+				texCoordSlice2.y += floor((n - zSliceNumber2) / nofCols) / nofCols;
 
 				//Get the opacity value from the 2D texture.
 				//Bilinear filtering is done at each texture2D by default.
@@ -116,7 +117,7 @@
 				colorSlice2.rgb = texture2D( transferTex, vec2( colorSlice2.a, 1.0) ).rgb;
 
 				//How distant is zSlice1 to ZSlice2. Used to interpolate between one Z slice and the other.
-				float zDifference = mod(texCoord.z * 255.0, 1.0);
+				float zDifference = mod(texCoord.z * n, 1.0);
 
 				//Finally interpolate between the two intermediate colors of each Z slice.
 				return mix(colorSlice1, colorSlice2, zDifference) ;
@@ -234,7 +235,7 @@
 				//Parameters that can be modified.
 				guiControls = new function() {
 					this.model = 'bonsai';
-					this.steps = 256.0;
+					this.steps = 64.0;
 					this.alphaCorrection = 1.0;
 					this.color1 = "#00FA58";
 					this.stepPos1 = 0.1;
@@ -254,7 +255,7 @@
 
 
 				//Load the 2D texture containing the Z slices.
-				cubeTextures['bonsai'] = THREE.ImageUtils.loadTexture('bonsai.raw.png' );
+				cubeTextures['bonsai'] = THREE.ImageUtils.loadTexture('eyeResult4.png' );
 				cubeTextures['teapot'] = THREE.ImageUtils.loadTexture('teapot.raw.png');
 				cubeTextures['foot'] = THREE.ImageUtils.loadTexture('foot.raw.png');
 
@@ -370,7 +371,7 @@
 			{
 				var canvas = document.createElement('canvas');
 				canvas.height = 20;
-				canvas.width = 256;
+				canvas.width = 64;
 
 				var ctx = canvas.getContext('2d');
 
@@ -384,8 +385,8 @@
 
 				var img = document.getElementById("transferFunctionImg");
 				img.src = canvas.toDataURL();
-				img.style.width = "256 px";
-				img.style.height = "128 px";
+				img.style.width = "128 px";
+				img.style.height = "256 px";
 
 				transferTexture =  new THREE.Texture(canvas);
 				transferTexture.wrapS = transferTexture.wrapT =  THREE.ClampToEdgeWrapping;
