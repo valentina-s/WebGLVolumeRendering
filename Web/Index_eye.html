@@ -80,8 +80,8 @@
 				//The z coordinate determines which Z slice we have to look for.
 				//Z slice number goes from 0 to 255.
 				//float nofSlices = 50.;
-				float nofSlices = 64.;
-				float n = 63.;
+				float nofSlices = 128.;
+				float n = 127.;
 				float zSliceNumber1 = floor(texCoord.z  * n);
 
 				//As we use trilinear we go the next Z slice.
@@ -93,8 +93,8 @@
 				//The original UV coordinates have to be rescaled by the tile numbers in each row and column.
         // nofCols = 10.0;
         // nofRows = 5.;
-				float nofCols = 8.;
-				float nofRows = 8.;
+				float nofCols = 16.;
+				float nofRows = 16.;
 				texCoord.xy /= nofCols;//this might need to be number of rows
 
 				texCoordSlice1 = texCoordSlice2 = texCoord.xy;
@@ -162,7 +162,7 @@
 
 				//If we have twice as many samples, we only need ~1/2 the alpha per sample.
 				//Scaling by 256/10 just happens to give a good value for the alphaCorrection slider.
-				float alphaScaleFactor = 25.6 * delta;
+				float alphaScaleFactor = 12.8 * delta;
 
 				vec4 colorSample;
 				float alphaSample;
@@ -235,7 +235,7 @@
 				//Parameters that can be modified.
 				guiControls = new function() {
 					this.model = 'bonsai';
-					this.steps = 64.0;
+					this.steps = 128.0;
 					this.alphaCorrection = 1.0;
 					this.color1 = "#00FA58";
 					this.stepPos1 = 0.1;
@@ -255,7 +255,7 @@
 
 
 				//Load the 2D texture containing the Z slices.
-				cubeTextures['bonsai'] = THREE.ImageUtils.loadTexture('eyeResult4.png' );
+				cubeTextures['bonsai'] = THREE.ImageUtils.loadTexture('eyeResult4-256.png' );
 				cubeTextures['teapot'] = THREE.ImageUtils.loadTexture('teapot.raw.png');
 				cubeTextures['foot'] = THREE.ImageUtils.loadTexture('foot.raw.png');
 
@@ -371,7 +371,7 @@
 			{
 				var canvas = document.createElement('canvas');
 				canvas.height = 20;
-				canvas.width = 64;
+				canvas.width = 256;
 
 				var ctx = canvas.getContext('2d');
 
@@ -385,8 +385,8 @@
 
 				var img = document.getElementById("transferFunctionImg");
 				img.src = canvas.toDataURL();
-				img.style.width = "128 px";
-				img.style.height = "256 px";
+				img.style.width = "300 px";
+				img.style.height = "300 px";
 
 				transferTexture =  new THREE.Texture(canvas);
 				transferTexture.wrapS = transferTexture.wrapT =  THREE.ClampToEdgeWrapping;
