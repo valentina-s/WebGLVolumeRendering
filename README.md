@@ -5,7 +5,7 @@ This repository is an adaptation of the code at
 
 https://github.com/lebarba/WebGLVolumeRendering
 
-to display cornea images. Cornea images do not 
+to display cornea images. Cornea images do not always have square dimensions which are powers of 2. So the code needs to be modified to work with arbitrary images.
 
 
 
