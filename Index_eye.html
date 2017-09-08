@@ -229,7 +229,7 @@
 
 			var clock = new THREE.Clock();
 			var rtTexture, transferTexture;
-			var cubeTextures = ['bonsai', 'foot', 'teapot'];
+			var cubeTextures = ['ommatidia', 'foot', 'teapot'];
 			var histogram = [];
 			var guiControls;
 
@@ -242,7 +242,7 @@
 				//Parameters that can be modified.
 				guiControls = new function() {
 					this.model = 'ommatidia';
-					this.steps = 128.0;
+					this.steps = 256.0;
 					this.alphaCorrection = 1.0;
 					this.color1 = "#00FA58";
 					this.stepPos1 = 0.1;
@@ -262,15 +262,15 @@
 
 
 				//Load the 2D texture containing the Z slices.
-				cubeTextures['bonsai'] = THREE.ImageUtils.loadTexture('data/eyeResult4-256.png' );
+				cubeTextures['ommatidia'] = THREE.ImageUtils.loadTexture('data/eyeResult4-256.png' );
 				cubeTextures['teapot'] = THREE.ImageUtils.loadTexture('data/teapot.raw.png');
 				cubeTextures['foot'] = THREE.ImageUtils.loadTexture('data/foot.raw.png');
 
 
 				//Don't let it generate mipmaps to save memory and apply linear filtering to prevent use of LOD.
-				cubeTextures['bonsai'].generateMipmaps = false;
-				cubeTextures['bonsai'].minFilter = THREE.LinearFilter;
-				cubeTextures['bonsai'].magFilter = THREE.LinearFilter;
+				cubeTextures['ommatidia'].generateMipmaps = false;
+				cubeTextures['ommatidia'].minFilter = THREE.LinearFilter;
+				cubeTextures['ommatidia'].magFilter = THREE.LinearFilter;
 
 				cubeTextures['teapot'].generateMipmaps = false;
 				cubeTextures['teapot'].minFilter = THREE.LinearFilter;
@@ -305,7 +305,7 @@
 					fragmentShader: document.getElementById( 'fragmentShaderSecondPass' ).textContent,
 					side: THREE.FrontSide,
 					uniforms: {	tex:  { type: "t", value: rtTexture },
-								cubeTex:  { type: "t", value: cubeTextures['bonsai'] },
+								cubeTex:  { type: "t", value: cubeTextures['ommatidia'] },
 								transferTex:  { type: "t", value: transferTexture },
 								steps : {type: "1f" , value: guiControls.steps },
 								alphaCorrection : {type: "1f" , value: guiControls.alphaCorrection }}
@@ -333,7 +333,7 @@
 
 
 				var gui = new dat.GUI();
-				var modelSelected = gui.add(guiControls, 'model', [ 'bonsai', 'foot', 'teapot' ] );
+				var modelSelected = gui.add(guiControls, 'model', [ 'ommatidia', 'foot', 'teapot' ] );
 				gui.add(guiControls, 'steps', 0.0, 512.0);
 				gui.add(guiControls, 'alphaCorrection', 0.01, 5.0).step(0.01);
 
@@ -376,7 +376,7 @@
 			}
 			function updateTransferFunction()
 			{
-                var zdim = 256;
+        var zdim = 256;
 				var canvas = document.createElement('canvas');
 				canvas.height = 20;
 				canvas.width = zdim;
@@ -393,8 +393,8 @@
 
 				var img = document.getElementById("transferFunctionImg");
 				img.src = canvas.toDataURL();
-				img.style.width = "300 px";
-				img.style.height = "300 px";
+				img.style.width = "256 px";
+				img.style.height = "128 px";
 
 				transferTexture =  new THREE.Texture(canvas);
 				transferTexture.wrapS = transferTexture.wrapT =  THREE.ClampToEdgeWrapping;
