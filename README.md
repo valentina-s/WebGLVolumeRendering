@@ -1,10 +1,11 @@
-WebGL Volume Rendering Made Easy
+WebGL Volume Rendering
 ====================
-A very simple step by step introduction to pixel shader volume rendering using WebGL and ThreeJS.
 
-Go to  http://lebarba.com/blog/ for the step by step tutorial
+This repository is an adaptation of the code at 
 
-Demo online in GitHub http://www.lebarba.com/WebGL/Index.html
+https://github.com/lebarba/WebGLVolumeRendering
+
+to display cornea images. Cornea images do not 
 
 
 
@@ -15,7 +16,7 @@ Demo online in GitHub http://www.lebarba.com/WebGL/Index.html
 ## LICENSE
 
 The MIT License (MIT)
-Copyright (c) 2015 Leandro Roberto Barbagallo
+Copyright (c) 2017 Valentina Staneva
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
