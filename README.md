@@ -9,8 +9,8 @@ to display cornea images. Cornea images do not always have square dimensions whi
 
 
 
-![Screenshot1](https://raw.githubusercontent.com/lebarba/WebGLVolumeRendering/master/Web/img/Bonsai.jpg)    
-![Screenshot2](https://raw.githubusercontent.com/lebarba/WebGLVolumeRendering/master/Web/img/Foot.jpg)    ![Screenshot3](https://raw.githubusercontent.com/lebarba/WebGLVolumeRendering/master/Web/img/Teapot.jpg)    
+![Screenshot1](https://raw.githubusercontent.com/lebarba/WebGLVolumeRendering/master/Web/img/slices.png)    
+![Screenshot2](https://raw.githubusercontent.com/lebarba/WebGLVolumeRendering/master/Web/img/3dvis.jpg)    ![Screenshot3](https://raw.githubusercontent.com/lebarba/WebGLVolumeRendering/master/Web/img/Teapot.jpg)    
 
 
 ## LICENSE
