@@ -74,7 +74,8 @@
             const float zdim = 256.0;
             //int MAX_STEPS = ceil(sqrt(3)*zdim);
 
-            const int MAX_STEPS = 887;
+            //const int MAX_STEPS = 887;
+						const int MAX_STEPS =887;
 
 			//Acts like a texture3D using Z slices and trilinear filtering.
 			vec4 sampleAs3DTexture(vec3 texCoord)
@@ -262,7 +263,7 @@
 
 
 				//Load the 2D texture containing the Z slices.
-				cubeTextures['ommatidia'] = THREE.ImageUtils.loadTexture('data/eyeResult4-256.png' );
+				cubeTextures['ommatidia'] = THREE.ImageUtils.loadTexture('data/eyeResult256.png' );
 				cubeTextures['teapot'] = THREE.ImageUtils.loadTexture('data/teapot.raw.png');
 				cubeTextures['foot'] = THREE.ImageUtils.loadTexture('data/foot.raw.png');
 
@@ -394,7 +395,7 @@
 				var img = document.getElementById("transferFunctionImg");
 				img.src = canvas.toDataURL();
 				img.style.width = "256 px";
-				img.style.height = "128 px";
+				img.style.height = "256 px";
 
 				transferTexture =  new THREE.Texture(canvas);
 				transferTexture.wrapS = transferTexture.wrapT =  THREE.ClampToEdgeWrapping;
