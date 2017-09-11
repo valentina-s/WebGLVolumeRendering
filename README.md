@@ -5,7 +5,7 @@ This repository is an adaptation of the code at
 
 https://github.com/lebarba/WebGLVolumeRendering
 
-to display cornea images. Cornea images do not always have square dimensions which are powers of 2. So the code needs to be modified to work with arbitrary images.
+to display cornea images. The approach uses 2D textures.That requires building a 2d mosaic image out of the 3d image. To efficiently process textures it is best if the image dimensions are of power of 2. Cornea images do not satisfy this condition. For now we pad the images to the maximal dimension (to have equal dimensions), and then downsample to an image of size 256x256x256. This needs to be optimized.
 
 
 
