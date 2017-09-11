@@ -244,8 +244,8 @@
 				guiControls = new function() {
 					this.model = 'ommatidia';
 					this.steps = 256.0;
-					this.alphaCorrection = 1.0;
-					this.color1 = "#00FA58";
+					this.alphaCorrection = 5.0;
+					this.color1 = "#6600fa";
 					this.stepPos1 = 0.1;
 					this.color2 = "#CC6600";
 					this.stepPos2 = 0.7;
@@ -336,7 +336,7 @@
 				var gui = new dat.GUI();
 				var modelSelected = gui.add(guiControls, 'model', [ 'ommatidia', 'foot', 'teapot' ] );
 				gui.add(guiControls, 'steps', 0.0, 512.0);
-				gui.add(guiControls, 'alphaCorrection', 0.01, 5.0).step(0.01);
+				gui.add(guiControls, 'alphaCorrection', 0.1, 10.0).step(0.1);
 
 				modelSelected.onChange(function(value) { materialSecondPass.uniforms.cubeTex.value =  cubeTextures[value]; } );
 
