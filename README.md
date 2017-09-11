@@ -10,7 +10,7 @@ to display cornea images. Cornea images do not always have square dimensions whi
 
 
 ![Screenshot1](https://raw.githubusercontent.com/valentina-s/WebGLVolumeRendering/master/img/slices.png)    
-![Screenshot2](https://raw.githubusercontent.com/valentina-s/WebGLVolumeRendering/master/img/3dvis.jpg)     
+![Screenshot2](https://raw.githubusercontent.com/valentina-s/WebGLVolumeRendering/master/img/3dvis_controls.png)     
 
 
 ## LICENSE
