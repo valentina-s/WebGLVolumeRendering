@@ -75,7 +75,7 @@
             //int MAX_STEPS = ceil(sqrt(3)*zdim);
 
             //const int MAX_STEPS = 887;
-						const int MAX_STEPS = 100;
+						const int MAX_STEPS = 887;
 
 			//Acts like a texture3D using Z slices and trilinear filtering.
 			vec4 sampleAs3DTexture(vec3 texCoord)
@@ -434,7 +434,54 @@
 				materialSecondPass.uniforms.alphaCorrection.value = guiControls.alphaCorrection;
 			}
 
+
 			//Leandro R Barbagallo - 2015 - lebarba at gmail.com
+		</script>
+
+		<script type='text/javascript'>
+		var mdata;
+		function readSwcFile(e) {
+			var f = e.target.files[0];
+			console.log(f);
+			if (f) {
+				var r = new FileReader();
+				r.onload = function(e2) {
+					var swc_txt = e2.target.result;
+					var swc = swc_parser(swc_txt);
+					if ( Object.keys(swc).length > 0 ) {
+						document.getElementById('container').innerHTML = "";
+						var s = new SharkViewer({
+							swc: swc,
+							dom_element: 'container',
+							center_node: -1,
+							show_stats: true,
+							metadata: mdata
+						});
+						s.init();
+						s.animate();
+					}
+					else {
+						alert("Please upload a valid swc file.");
+					}
+				}
+				r.readAsText(f);
+			} else {
+						alert("Failed to load file");
+			}
+		}
+		window.onload = function() {
+			document.getElementById('swc_input').addEventListener('change', readSwcFile, false);
+			var swc = swc_parser(document.getElementById("swc").text);
+			mdata = JSON.parse(document.getElementById("metadata_swc").text);
+			var s = new SharkViewer({
+				swc: swc,
+				dom_element: 'container',
+				center_node: -1,
+				show_stats: true,
+				metadata: mdata});
+			s.init();
+			s.animate();
+		}
 		</script>
 
 	</body>
