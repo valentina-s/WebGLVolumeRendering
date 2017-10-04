@@ -34,11 +34,11 @@
 			<div>Transfer function</div>
 			0.0<img id="transferFunctionImg" style="align:right"/>1.0
 		</div>
-		<script src="./js/three.min.js"></script>
-		<script src="./js/Detector.js"></script>
-		<script src="./js/stats.min.js"></script>
-		<script src="./js/OrbitControls.js"></script>
-		<script src="./js/dat.gui.min.js"></script>
+    <script src="https://rawgit.com/mrdoob/three.js/master/build/three.min.js"></script>
+		<script src="https://rawgit.com/mrdoob/three.js/master/examples/js/Detector.js"></script>
+		<script src="https://rawgit.com/mrdoob/three.js/master/examples/js/libs/stats.min.js"></script>
+		<script src="https://rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
+		<script src="https://rawgit.com/mrdoob/three.js/master/examples/js/libs/dat.gui.min.js"></script>
 		<script src="https://rawgit.com/mrdoob/three.js/master/examples/js/loaders/OBJLoader.js"></script>
 		<script src="https://rawgit.com/mrdoob/three.js/master/examples/js/loaders/NRRDLoader.js"></script>
 		<script src="https://rawgit.com/mrdoob/three.js/master/examples/js/loaders/VTKLoader.js"></script>
@@ -263,17 +263,20 @@
 				camera.position.z = 2.0;
 
 				controls = new THREE.OrbitControls( camera, container );
-				controls.center.set( 0.0, 0.0, 0.0 );
+				controls.target.set( 0.0, 0.0, 0.0 );
 
 
 				//Load the 2D texture containing the Z slices.
-				cubeTextures['ommatidia'] = THREE.ImageUtils.loadTexture('data/eyeResult256.png' );
-				cubeTextures['teapot'] = THREE.ImageUtils.loadTexture('data/teapot.raw.png');
-				cubeTextures['foot'] = THREE.ImageUtils.loadTexture('data/foot.raw.png');
+				cubeTextures['ommatidia'] = new THREE.TextureLoader().load('data/eyeResult256.png');
+				//cubeTextures['ommatidia'] = new THREE.TextureLoader().load('data/teapot.raw.png');
+				//var temp_loader  = new THREE.TextureLoader().load('data/eyeResult256.png');
+				cubeTextures['teapot'] = new THREE.TextureLoader().load('data/teapot.raw.png');
+				cubeTextures['foot'] = new THREE.TextureLoader().load('data/foot.raw.png');
 
 
 				//Don't let it generate mipmaps to save memory and apply linear filtering to prevent use of LOD.
 				cubeTextures['ommatidia'].generateMipmaps = false;
+				//temp_loader.minFilter = THREE.LinearFilter;
 				cubeTextures['ommatidia'].minFilter = THREE.LinearFilter;
 				cubeTextures['ommatidia'].magFilter = THREE.LinearFilter;
 
@@ -327,6 +330,27 @@
 
 				sceneFirstPass.add( meshFirstPass );
 				sceneSecondPass.add( meshSecondPass );
+
+
+        // Trying to insert surface plotting
+				var vtkmaterial = new THREE.MeshLambertMaterial( {wireframe : false, morphTargets : false, side : THREE.DoubleSide, color : 0xff0000} );
+
+				var vtkloader = new THREE.STLLoader();
+				vtkloader.load( "data/C3-Holco_Scan29_scaled_SIGEN_yreversed.stl", function ( geometry ) {
+
+					geometry.computeVertexNormals();
+
+					var mesh = new THREE.Mesh( geometry, vtkmaterial );
+					sceneSecondPass.add( mesh );
+					var visibilityControl = {
+						visible : false
+					};
+					gui.add(visibilityControl, "visible").name( "Model Visible").onChange( function () {
+						mesh.visible = visibilityControl.visible;
+						renderer.render( sceneSecondPass, camera );
+					});
+
+				} );
 
 				renderer = new THREE.WebGLRenderer();
 				container.appendChild( renderer.domElement );
