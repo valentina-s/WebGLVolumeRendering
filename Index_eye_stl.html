@@ -268,7 +268,9 @@
 
 				//Load the 2D texture containing the Z slices.
 				cubeTextures['ommatidia'] = new THREE.TextureLoader().load('data/eyeResult256.png');
-				//cubeTextures['ommatidia'] = new THREE.TextureLoader().load('data/teapot.raw.png');
+				//cubeTextures['ommatidia'].scale.x = 2;
+				//cubeTextures['ommatidia'].scale.y = 2;
+			  //cubeTextures['ommatidia'] = new THREE.TextureLoader().load('data/256version.png');
 				//var temp_loader  = new THREE.TextureLoader().load('data/eyeResult256.png');
 				cubeTextures['teapot'] = new THREE.TextureLoader().load('data/teapot.raw.png');
 				cubeTextures['foot'] = new THREE.TextureLoader().load('data/foot.raw.png');
@@ -305,12 +307,17 @@
 				var materialFirstPass = new THREE.ShaderMaterial( {
 					vertexShader: document.getElementById( 'vertexShaderFirstPass' ).textContent,
 					fragmentShader: document.getElementById( 'fragmentShaderFirstPass' ).textContent,
+					opacity : 1.0,
+					transparent: true,
 					side: THREE.BackSide
 				} );
 
 				materialSecondPass = new THREE.ShaderMaterial( {
 					vertexShader: document.getElementById( 'vertexShaderSecondPass' ).textContent,
 					fragmentShader: document.getElementById( 'fragmentShaderSecondPass' ).textContent,
+					opacity : 1.0,
+					transparent: true,
+
 					side: THREE.FrontSide,
 					uniforms: {	tex:  { type: "t", value: rtTexture },
 								cubeTex:  { type: "t", value: cubeTextures['ommatidia'] },
@@ -333,20 +340,46 @@
 
 
         // Trying to insert surface plotting
-				var vtkmaterial = new THREE.MeshLambertMaterial( {wireframe : false, morphTargets : false, side : THREE.DoubleSide, color : 0xff0000} );
+				//var vtkmaterial = new THREE.MeshLambertMaterial( {wireframe : false, morphTargets : false, side : THREE.DoubleSide, color : 0xff0000} );
 
-				var vtkloader = new THREE.STLLoader();
-				vtkloader.load( "data/C3-Holco_Scan29_scaled_SIGEN_yreversed.stl", function ( geometry ) {
+				var vtkloader = new THREE.OBJLoader();
 
-					geometry.computeVertexNormals();
 
-					var mesh = new THREE.Mesh( geometry, vtkmaterial );
-					sceneSecondPass.add( mesh );
+					//geometry.computeVertexNormals();
+
+				var vtkmaterial = new THREE.MeshBasicMaterial({color: 'yellow', side: THREE.DoubleSide});
+				//var vtkmaterial = new THREE.MeshLambertMaterial( {wireframe : false, morphTargets : false, side : THREE.DoubleSide, color : 0xff0000} );
+
+
+					vtkloader.load( "data/swc2Fiji2obj.obj", function (object ) {
+						object.traverse(function (child) {
+
+							if (child instanceof THREE.Mesh) {
+									child.material = vtkmaterial;
+							}
+
+					});
+					object.position.x = -0.5 ;
+					//object.position.y = 0.5 ;
+					object.position.y = 0.5 ;
+					object.position.z = -0.5 ;
+					object.scale.x = 0.00390625;
+          object.scale.y = 0.00390625;
+          object.scale.z = 0.00390625;
+					//object.rotation.y = 90;
+					object.rotation.y = Math.PI / 2;
+					object.rotation.x = Math.PI;
+					//object.rotation.z = Math.PI / 2;
+					//object.renderOrder = 1;
+
+					//sceneSecondPass.addobject;
+					sceneSecondPass.add( object );
 					var visibilityControl = {
-						visible : false
+						visible : true
 					};
 					gui.add(visibilityControl, "visible").name( "Model Visible").onChange( function () {
-						mesh.visible = visibilityControl.visible;
+						object.visible = visibilityControl.visible;
+						sceneSecondPass.add(object);
 						renderer.render( sceneSecondPass, camera );
 					});
 
@@ -364,9 +397,11 @@
 				var gui = new dat.GUI();
 				var modelSelected = gui.add(guiControls, 'model', [ 'ommatidia', 'foot', 'teapot' ] );
 				gui.add(guiControls, 'steps', 0.0, 512.0);
-				gui.add(guiControls, 'alphaCorrection', 0.1, 10.0).step(0.1);
+				gui.add(guiControls, 'alphaCorrection', 0.1, 50.0).step(0.1);
 
-				modelSelected.onChange(function(value) { materialSecondPass.uniforms.cubeTex.value =  cubeTextures[value]; } );
+				modelSelected.onChange(function(value) {
+        sceneSecondPass.add(object);
+				materialSecondPass.uniforms.cubeTex.value =  cubeTextures[value]; } );
 
 
 				//Setup transfer function steps.
@@ -453,6 +488,29 @@
 				var delta = clock.getDelta();
 
 				//Render first pass and store the world space coords of the back face fragments into the texture.
+        var vtkmaterial = new THREE.MeshBasicMaterial({color: 'yellow', side: THREE.DoubleSide});
+			  /* var vtkloader = new THREE.OBJLoader();
+				vtkloader.load( "data/swc2Fiji2obj.obj", function (object ) {
+					object.traverse(function (child) {
+
+						if (child instanceof THREE.Mesh) {
+								child.material = vtkmaterial;
+						}
+
+				});
+				object.position.x = -0.5 ;
+				//object.position.y = 0.5 ;
+				object.position.y = 0.0 ;
+				object.position.z = -0.5 ;
+				object.scale.x = 0.00390625;
+				object.scale.y = 0.00390625;
+				object.scale.z = 0.00390625;
+				//object.rotation.y = 90;
+				object.rotation.y = Math.PI / 2;
+				object.rotation.x = Math.PI;
+
+				sceneSecondPass.add(object);
+*/
 				renderer.render( sceneFirstPass, camera, rtTexture, true );
 
 				//Render the second pass and perform the volume rendering.
@@ -460,7 +518,8 @@
 
 				materialSecondPass.uniforms.steps.value = guiControls.steps;
 				materialSecondPass.uniforms.alphaCorrection.value = guiControls.alphaCorrection;
-			}
+			//});
+		};
 
 
 			//Leandro R Barbagallo - 2015 - lebarba at gmail.com
