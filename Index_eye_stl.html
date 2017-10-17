@@ -12,6 +12,7 @@
 				font-weight: bold;
 
 				background-color: #050505;
+
 				margin: 0px;
 				overflow: hidden;
 			}
@@ -78,8 +79,8 @@
             const float zdim = 256.0;
             //int MAX_STEPS = ceil(sqrt(3)*zdim);
 
-            //const int MAX_STEPS = 887;
-						const int MAX_STEPS = 887;
+            const int MAX_STEPS = 887;
+						//const int MAX_STEPS = 512;
 
 			//Acts like a texture3D using Z slices and trilinear filtering.
 			vec4 sampleAs3DTexture(vec3 texCoord)
@@ -307,7 +308,7 @@
 				var materialFirstPass = new THREE.ShaderMaterial( {
 					vertexShader: document.getElementById( 'vertexShaderFirstPass' ).textContent,
 					fragmentShader: document.getElementById( 'fragmentShaderFirstPass' ).textContent,
-					opacity : 1.0,
+					opacity : 0.5,
 					transparent: true,
 					side: THREE.BackSide
 				} );
@@ -315,7 +316,7 @@
 				materialSecondPass = new THREE.ShaderMaterial( {
 					vertexShader: document.getElementById( 'vertexShaderSecondPass' ).textContent,
 					fragmentShader: document.getElementById( 'fragmentShaderSecondPass' ).textContent,
-					opacity : 1.0,
+					opacity : 0.5,
 					transparent: true,
 
 					side: THREE.FrontSide,
@@ -325,16 +326,19 @@
 								steps : {type: "1f" , value: guiControls.steps },
 								alphaCorrection : {type: "1f" , value: guiControls.alphaCorrection }}
 				 });
+				materialSecondPass.premultipliedAlpha = true;
 
 				sceneFirstPass = new THREE.Scene();
 				sceneSecondPass = new THREE.Scene();
+				//sceneFirstPass.background = new THREE.Color( 0xffffff );
+				//sceneSecondPass.background = new THREE.Color( 0xffffff );
 
 				var boxGeometry = new THREE.BoxGeometry(1.0, 1.0, 1.0);
 				boxGeometry.doubleSided = true;
 
 				var meshFirstPass = new THREE.Mesh( boxGeometry, materialFirstPass );
 				var meshSecondPass = new THREE.Mesh( boxGeometry, materialSecondPass );
-
+        //meshSecondPass.renderOrder = 1;
 				sceneFirstPass.add( meshFirstPass );
 				sceneSecondPass.add( meshSecondPass );
 
@@ -347,8 +351,8 @@
 
 					//geometry.computeVertexNormals();
 
-				var vtkmaterial = new THREE.MeshBasicMaterial({color: 'yellow', side: THREE.DoubleSide});
-				//var vtkmaterial = new THREE.MeshLambertMaterial( {wireframe : false, morphTargets : false, side : THREE.DoubleSide, color : 0xff0000} );
+				var vtkmaterial = new THREE.MeshBasicMaterial({color: 'yellow', side: THREE.DoubleSide,transparent: false, opacity: 0.9});
+				//var vtkmaterial = new THREE.MeshLambertMaterial( {wireframe : false, morphTargets : false, side : THREE.DoubleSide, color : 'yellow',transparent: false, opacity: 0.9} );
 
 
 					vtkloader.load( "data/swc2Fiji2obj.obj", function (object ) {
@@ -370,7 +374,7 @@
 					object.rotation.y = Math.PI / 2;
 					object.rotation.x = Math.PI;
 					//object.rotation.z = Math.PI / 2;
-					//object.renderOrder = 1;
+					//object.renderOrder = 2;
 
 					//sceneSecondPass.addobject;
 					sceneSecondPass.add( object );
@@ -386,6 +390,7 @@
 				} );
 
 				renderer = new THREE.WebGLRenderer();
+				//renderer.sortObjects = false;
 				container.appendChild( renderer.domElement );
 
 				stats = new Stats();
@@ -401,7 +406,8 @@
 
 				modelSelected.onChange(function(value) {
         sceneSecondPass.add(object);
-				materialSecondPass.uniforms.cubeTex.value =  cubeTextures[value]; } );
+				materialSecondPass.uniforms.cubeTex.value =  cubeTextures[value];
+			  materialSecondPass.premultipliedAlpha = true; } );
 
 
 				//Setup transfer function steps.
@@ -437,6 +443,7 @@
 			function updateTextures(value)
 			{
 				materialSecondPass.uniforms.transferTex.value = updateTransferFunction();
+				materialSecondPass.premultipliedAlpha = true;
 			}
 			function updateTransferFunction()
 			{
@@ -461,6 +468,7 @@
 				img.style.height = "256 px";
 
 				transferTexture =  new THREE.Texture(canvas);
+				// this line looks wrong? compare with github
 				transferTexture.wrapS = transferTexture.wrapT =  THREE.ClampToEdgeWrapping;
 				transferTexture.needsUpdate = true;
 
@@ -486,10 +494,10 @@
 			function render() {
 
 				var delta = clock.getDelta();
-
+        /*
 				//Render first pass and store the world space coords of the back face fragments into the texture.
         var vtkmaterial = new THREE.MeshBasicMaterial({color: 'yellow', side: THREE.DoubleSide});
-			  /* var vtkloader = new THREE.OBJLoader();
+			  var vtkloader = new THREE.OBJLoader();
 				vtkloader.load( "data/swc2Fiji2obj.obj", function (object ) {
 					object.traverse(function (child) {
 
@@ -500,7 +508,7 @@
 				});
 				object.position.x = -0.5 ;
 				//object.position.y = 0.5 ;
-				object.position.y = 0.0 ;
+				object.position.y = 0.5 ;
 				object.position.z = -0.5 ;
 				object.scale.x = 0.00390625;
 				object.scale.y = 0.00390625;
@@ -510,7 +518,8 @@
 				object.rotation.x = Math.PI;
 
 				sceneSecondPass.add(object);
-*/
+				sceneSecondPass.sortObjects = false;
+        */
 				renderer.render( sceneFirstPass, camera, rtTexture, true );
 
 				//Render the second pass and perform the volume rendering.
@@ -518,6 +527,8 @@
 
 				materialSecondPass.uniforms.steps.value = guiControls.steps;
 				materialSecondPass.uniforms.alphaCorrection.value = guiControls.alphaCorrection;
+				//materialSecondPass.alphaTest = 0.;
+				materialSecondPass.premultipliedAlpha = true;
 			//});
 		};
 
